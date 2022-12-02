@@ -1,23 +1,23 @@
 const fs = require('fs');
 
 const wins = {
-  "A": "Y",
-  "B": "Z",
-  "C": "X"
+  'A': 'Y',
+  'B': 'Z',
+  'C': 'X'
 };
 const loses = {
-  "A": "Z",
-  "B": "X",
-  "C": "Y"
+  'A': 'Z',
+  'B': 'X',
+  'C': 'Y'
 }
 ;
 const points = {
-  "X": 1,
-  "Y": 2,
-  "Z": 3,
-  "A": 1,
-  "B": 2,
-  "C": 3
+  'X': 1,
+  'Y': 2,
+  'Z': 3,
+  'A': 1,
+  'B': 2,
+  'C': 3
 };
 
 fs.readFile('./input', 'utf-8', (_, data) => {
@@ -36,9 +36,9 @@ const getScore = (line) => {
   let me = parts[1];
   let you = parts[0];
 
-  if (me == "Z") {
+  if (me == 'Z') {
     return 6 + points[wins[you]];
-  } else if (me == "Y") {
+  } else if (me == 'Y') {
     return 3 + points[you];
   }
   return points[loses[you]];

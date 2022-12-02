@@ -1,21 +1,21 @@
 const fs = require('fs');
 
 const wins = {
-  "A": "Y",
-  "B": "Z",
-  "C": "X"
+  'A': 'Y',
+  'B': 'Z',
+  'C': 'X'
 };
 
 const equals = {
-  "A": "X",
-  "B": "Y",
-  "C": "Z"
+  'A': 'X',
+  'B': 'Y',
+  'C': 'Z'
 };
 
 const points = {
-  "X": 1,
-  "Y": 2,
-  "Z": 3
+  'X': 1,
+  'Y': 2,
+  'Z': 3
 };
 
 fs.readFile('./input', 'utf-8', (_, data) => {
