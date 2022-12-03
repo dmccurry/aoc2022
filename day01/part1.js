@@ -10,7 +10,6 @@ fs.readFile('./input', 'utf-8', (err, data) => {
     if (b > max) {
       max = b;
     }
-    all.push(b);
   });
   console.log(`Solution is ${max}`);
 });
