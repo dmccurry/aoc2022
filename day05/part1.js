@@ -5,19 +5,24 @@ fs.readFile('./input', 'utf-8', (_, data) => {
   let [crates, steps] = data.split('\n\n');
   let stacks = [];
 
+  // fill in crates with empty ones
   while (crates.indexOf('    ') >= 0) {
     crates = crates.replace(/    \[/ig, '[.] [');
     crates = crates.replace(/\]    /ig, '] [.]');  
   }
   cratesSplit = crates.split('\n');
 
+  // reverse so we start at the bottom
   cratesSplit = cratesSplit.reverse();
+  // numbers
   let nCrates = cratesSplit.shift().replace(/ /ig, '').length;
+  
+  // empty stacks
   for (let i = 0; i<nCrates; i++) {
     stacks[i] = [];
   }
 
-
+  // create stacks
   for (let i=0; i<cratesSplit.length; i++) { 
     const row = cratesSplit[i].split(' ').map(x => x.replace('[', '')).map(x => x.replace(']', ''));
     
@@ -27,6 +32,8 @@ fs.readFile('./input', 'utf-8', (_, data) => {
       }
     }
   }
+
+  // run through steps for crane
   const stepsSplit = steps.split('\n');
   for (let i=0; i<stepsSplit.length; i++) {
     let [move, num, from, source, to, dest] = stepsSplit[i].split(' ');
