@@ -39,13 +39,5 @@ fs.readFile('./input', 'utf-8', (_, data) => {
     }
   }
 
-  let solution = '';
-
-  for (let i=0; i<nCrates; i++) {
-    solution += stacks[i][stacks[i].length - 1];
-  }
-
-  console.log(`Solution is ${solution}`);
-  
-
+  console.log(`Solution is ${stacks.reduce((a, b) => a + b.pop(), '')}`);
 });
