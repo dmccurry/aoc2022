@@ -41,7 +41,6 @@ fs.readFile('./input', 'utf-8', (_, data) => {
         else amt = parseInt(amt);
         if (op == '*') worry = worry * amt;
         if (op == '+') worry = worry + amt;
-        if (op == '-') worry = worry + amt;
         if (worry % currentMonkey.test == 0) {
           monkeys[currentMonkey.t].items.push(worry);
         } else {
