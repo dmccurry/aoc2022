@@ -34,7 +34,7 @@ fs.readFile('./input', 'utf-8', (_, data) => {
   // build our graph of points
   for (let y=0; y<grid.length; y++) {
     for (let x=0; x<grid[y].length; x++) {
-      const height = (grid[y][x] == 'S' || grid[y][x] == 'E') ? 0 : heights.indexOf(grid[y][x]);
+      const height = (grid[y][x] == 'S') ? 0 : heights.indexOf(grid[y][x]);
       const neighbors = [];
       neighbors.push(`${x},${y+1}`);
       neighbors.push(`${x},${y-1}`);
@@ -44,7 +44,12 @@ fs.readFile('./input', 'utf-8', (_, data) => {
       const filteredNeighbors = neighbors.filter(n => {
         let [x2, y2] = n.split(',').map(j => parseInt(j));
         const isOnGrid = x2 >= 0 && y2 >= 0 && x2 < grid[y].length && y2 < grid.length;
-        return isOnGrid && (heights.indexOf(grid[y2][x2]) - height <= 1);
+        if (!isOnGrid) return false;
+
+        let next = grid[y2][x2];
+        if (next == 'S') next = 'a';
+        if (next == 'E') next = 'z';
+        return heights.indexOf(next) - height <= 1;
       });
 
       graph[`${x},${y}`] = new Point(x, y, height, filteredNeighbors);
