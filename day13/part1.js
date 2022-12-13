@@ -1,14 +1,13 @@
 const fs = require('fs');
 
 fs.readFile('./input', 'utf-8', (_, data) => {
-
   const pairs = data.split('\n\n');
   let index = 1;
   const indicies = [];
 
   pairs.forEach(pair => {
     const [left, right] = pair.split('\n').map(a => eval(a));
-    if (compare(left, right)) {
+    if (compare(left, right) < 0) {
       indicies.push(index);
     }
     index++;
@@ -18,33 +17,20 @@ fs.readFile('./input', 'utf-8', (_, data) => {
 });
 
 const compare = (left, right) => {
-  if (typeof(left) == 'object' && typeof(right) == 'object') {
-    if (left.length == 0) return true;
-    for (let i=0; i<left.length; i++) {
-      if (i > right.length - 1) {
-        return false;
-      }
-      const leftItem = left[i];
-      const rightItem = right[i];
-
-      if (typeof(leftItem) == 'number' && typeof(rightItem) == 'number') {
-        if (leftItem < rightItem) return true;
-        if (rightItem < leftItem) return false;
-      } else {
-        return compare(leftItem, rightItem);
-      }
+  if (typeof(left) == 'number' && typeof(right) == 'number') {
+    return left - right;
+  } else {
+    if (typeof(left) != 'object') {
+      left = [left];
     }
-    if (left.length <= right.length) {
-      return true;
+    if (typeof(right) != 'object') {
+      right = [right];
     }
-  } else if (typeof(left) == 'object' && typeof(right) == 'number') {
-    const newRight = [];
-    newRight.push(right);
-    return compare(left, newRight);
-  } else if (typeof(right) == 'object' && typeof(left) == 'number') {
-    const newLeft = [];
-    newLeft.push(left);
-    return compare(newLeft, right);
-  } 
-  return false;
+    let l = Math.min(left.length, right.length);
+    for (let i=0; i<l; i++) {
+      let c = compare(left[i], right[i]);
+      if (c != 0) return c;
+    }
+    return left.length - right.length;
+  }
 }

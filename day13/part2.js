@@ -31,10 +31,10 @@ const compare = (left, right) => {
     return left - right;
   } else {
     if (typeof(left) != 'object') {
-      let newLeft = []; newLeft.push(left); left = newLeft;
+      left = [left];
     }
     if (typeof(right) != 'object') {
-      let newRight = []; newRight.push(right); right = newRight;
+      right = [right];
     }
     let l = Math.min(left.length, right.length);
     for (let i=0; i<l; i++) {
