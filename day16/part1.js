@@ -42,6 +42,9 @@ fs.readFile('./input', 'utf-8', (_, data) => {
   // get all the valves with flow
   const flow = valves.filter((a) => a.rate > 0).map(a => a.valve);
 
+  // create two arrays for memoization
+  // dp has our actual values at [minute]
+  // prev has our prev values for dp
   let dp = [];
   let prev = [];
   for (let i=0; i<31; i++) {
@@ -51,12 +54,13 @@ fs.readFile('./input', 'utf-8', (_, data) => {
       dp[i][j] = [];
       prev[i][j] = [];
       for (let k=0; k<(1<<flow.length); k++) {
-        dp[i][j][k] = -99999999;
+        dp[i][j][k] = -Infinity;
         prev[i][j][k] = undefined;
       }
     }
-
   }
+
+  // initialize for all the valves with a flow rate
   for (let i=0; i<flow.length; i++) {
     let distance = paths['AA'];
     if (distance[flow[i]]) {
@@ -66,13 +70,15 @@ fs.readFile('./input', 'utf-8', (_, data) => {
 
   let solution = 0;
 
-  for (let i=1; i<31; i++) { // 30 minutes!
+  // for each minute 1-30
+  for (let i=1; i<31; i++) {
     for (let j=0; j < (1 << flow.length); j++) {
       for (let k=0; k<flow.length; k++) {
         const flowHere = getFlow(j, flow);
-        const flowPrev = dp[i-1][k][j] + flowHere;
-        if (flowPrev > dp[i][k][j]) { // flow goes down
-          dp[i][k][j] = flowPrev;
+        const flowNext = dp[i-1][k][j] + flowHere;
+        // flow rate increases
+        if (flowNext > dp[i][k][j]) { 
+          dp[i][k][j] = flowNext;
           prev[i][k][j] = [i-1, k, j];
         }
 
@@ -85,7 +91,7 @@ fs.readFile('./input', 'utf-8', (_, data) => {
         }
 
         for (let l = 0; l < flow.length; l++) {
-          if ((( 1 << l) & j) !== 0) {
+          if (((1 << l) & j) !== 0) {
             continue;
           }
           let d = 0;
@@ -98,6 +104,7 @@ fs.readFile('./input', 'utf-8', (_, data) => {
             }
           }
           const curVal = dp[i][k][j] + flowHere * (d + 1);
+          // d is a bad name - think of it as number of steps
           if (curVal > dp[i+d+1][l][j | (1 << l)]) {
             dp[i + d + 1][l][j | (1 << l)] = curVal;
             prev[i + d + 1][l][j | (1 << l)] = [i, k, j];
@@ -112,7 +119,6 @@ fs.readFile('./input', 'utf-8', (_, data) => {
 
 const getFlow = (mask, flow) => {
   let ret = 0;
-
   for (let i=0; i<flow.length; i++) {
     if (((1 << i) & mask) !== 0) {
       ret += graph[flow[i]].rate;
