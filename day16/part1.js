@@ -61,6 +61,7 @@ fs.readFile('./input', 'utf-8', (_, data) => {
   }
 
   // initialize for all the valves with a flow rate
+  // that have a path to our start.
   for (let i=0; i<flow.length; i++) {
     let distance = paths['AA'];
     if (distance[flow[i]]) {
@@ -74,9 +75,15 @@ fs.readFile('./input', 'utf-8', (_, data) => {
   for (let i=1; i<31; i++) {
     for (let j=0; j < (1 << flow.length); j++) {
       for (let k=0; k<flow.length; k++) {
+        // here we have a bitmask thing for dp
+        // basically our 3d array has
+        // i == step
+        // k == value
+        // j == bitmask
         const flowHere = getFlow(j, flow);
         const flowNext = dp[i-1][k][j] + flowHere;
         // flow rate increases
+        // this part is straighforward and makes sense
         if (flowNext > dp[i][k][j]) { 
           dp[i][k][j] = flowNext;
           prev[i][k][j] = [i-1, k, j];
@@ -86,11 +93,13 @@ fs.readFile('./input', 'utf-8', (_, data) => {
           solution = dp[i][k][j];
         }
 
+        // if this is 0, it means that it doesn't exist so we can skip
         if (((1 << k) & j) === 0) {
           continue;
         }
 
         for (let l = 0; l < flow.length; l++) {
+          // skip if this already exists
           if (((1 << l) & j) !== 0) {
             continue;
           }
@@ -98,13 +107,16 @@ fs.readFile('./input', 'utf-8', (_, data) => {
           if (paths[flow[k]]) {
             if (paths[flow[k]][flow[l]]) {
               d = paths[flow[k]][flow[l]];
-              if (i + d + 1 >= 31) {
+              if (i + d + 1 >= 31) { // takes us outside of our number of steps
                 continue;
               }
             }
           }
           const curVal = dp[i][k][j] + flowHere * (d + 1);
-          // d is a bad name - think of it as number of steps
+          // last tricky part - (j | (1 << l)) gives us the bitmask
+          // for each valve in flow
+          // this is what we use for the optimizations above
+          // and if it's higher, we set dp + prev like above.
           if (curVal > dp[i+d+1][l][j | (1 << l)]) {
             dp[i + d + 1][l][j | (1 << l)] = curVal;
             prev[i + d + 1][l][j | (1 << l)] = [i, k, j];
