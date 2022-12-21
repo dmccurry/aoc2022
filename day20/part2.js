@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { setMaxIdleHTTPParsers } = require('http');
 let list;
 let nodes = {};
 const key = 811589153;
